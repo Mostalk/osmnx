@@ -45,7 +45,7 @@ def geocode(query):
         raise ValueError(f"Nominatim could not geocode query {query!r}")
 
 
-def geocode_to_gdf(query, which_result=None, by_osmid=False, buffer_dist=None):
+def geocode_to_gdf(query, which_result=None, by_osmid=False, by_placeid=False, buffer_dist=None):
     """
     Retrieve place(s) by name or ID from the Nominatim API as a GeoDataFrame.
 
@@ -108,7 +108,7 @@ def geocode_to_gdf(query, which_result=None, by_osmid=False, buffer_dist=None):
     # geocode each query and add to GeoDataFrame as a new row
     gdf = gpd.GeoDataFrame()
     for q, wr in zip(query, which_result):
-        gdf = pd.concat([gdf, _geocode_query_to_gdf(q, wr, by_osmid)])
+        gdf = pd.concat([gdf, _geocode_query_to_gdf(q, wr, by_osmid, by_placeid)])
 
     # reset GeoDataFrame index and set its CRS
     gdf = gdf.reset_index(drop=True)
@@ -126,7 +126,7 @@ def geocode_to_gdf(query, which_result=None, by_osmid=False, buffer_dist=None):
     return gdf
 
 
-def _geocode_query_to_gdf(query, which_result, by_osmid):
+def _geocode_query_to_gdf(query, which_result, by_osmid, by_placeid):
     """
     Geocode a single place query to a GeoDataFrame.
 
@@ -151,7 +151,7 @@ def _geocode_query_to_gdf(query, which_result, by_osmid):
     else:
         limit = which_result
 
-    results = downloader._osm_place_download(query, by_osmid=by_osmid, limit=limit)
+    results = downloader._osm_place_download(query, by_osmid=by_osmid,by_placeid=by_placeid, limit=limit)
 
     # choose the right result from the JSON response
     if not results:
