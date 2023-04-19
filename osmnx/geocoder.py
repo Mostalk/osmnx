@@ -226,6 +226,7 @@ def _get_first_polygon(results, query):
     for result in results:
         if "geojson" in result and result["geojson"]["type"] in polygon_types:
             return result
-
+        if "geometry" in result and result["geometry"]["type"] in polygon_types:
+            return result
     # if we never found a polygon, throw an error
     raise ValueError(f"Nominatim could not geocode query {query!r} to polygonal boundaries")
