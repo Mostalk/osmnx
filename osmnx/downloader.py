@@ -620,7 +620,7 @@ def _osm_place_download(query, by_osmid=False, by_placeid=False, limit=1, polygo
 
     elif by_placeid:
         # if querying by OSM ID, use the lookup endpoint
-        request_type = "detail"
+        request_type = "details"
         params["place_id"] = query
 
     else:
@@ -666,7 +666,7 @@ def nominatim_request(params, request_type="search", pause=1, error_pause=60):
     -------
     response_json : dict
     """
-    if request_type not in {"search", "reverse", "lookup"}:  # pragma: no cover
+    if request_type not in {"search", "reverse", "lookup", "details"}:  # pragma: no cover
         raise ValueError('Nominatim request_type must be "search", "reverse", or "lookup"')
 
     # resolve url to same IP even if there is server round-robin redirecting
